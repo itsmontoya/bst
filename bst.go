@@ -2,8 +2,12 @@ package bst
 
 import "sort"
 
+// BST is a sorted collection of entries keyed by string.
+//
+// It stores entries in key order and uses binary search for lookups.
 type BST[T Entry] []T
 
+// Get returns the entry with the given key.
 func (b BST[T]) Get(key string) (out T, ok bool) {
 	val, _, match := b.get(key)
 	if !match {
@@ -13,6 +17,7 @@ func (b BST[T]) Get(key string) (out T, ok bool) {
 	return val, true
 }
 
+// ForEach calls fn for each entry in key order until fn returns an error.
 func (b BST[T]) ForEach(fn func(T) error) (err error) {
 	for _, t := range b {
 		if err = fn(t); err != nil {
@@ -23,12 +28,14 @@ func (b BST[T]) ForEach(fn func(T) error) (err error) {
 	return nil
 }
 
+// Cursor returns a cursor positioned over b.
 func (b BST[T]) Cursor() (out *Cursor[T]) {
 	var c Cursor[T]
 	c.b = b
 	return &c
 }
 
+// Insert adds val to b or replaces the existing entry with the same key.
 func (b *BST[T]) Insert(val T) {
 	_, index, match := b.get(val.Key())
 	if match {
@@ -39,6 +46,7 @@ func (b *BST[T]) Insert(val T) {
 	b.insert(index, val)
 }
 
+// Remove deletes the entry with the given key from b.
 func (b *BST[T]) Remove(key string) {
 	_, index, match := b.get(key)
 	if !match {
