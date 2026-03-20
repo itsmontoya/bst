@@ -2,6 +2,12 @@ package bst
 
 import "sync"
 
+func NewSync[T Entry](length int) (out *SyncBST[T]) {
+	var s SyncBST[T]
+	s.b = make(BST[T], 0, length)
+	return &s
+}
+
 // SyncBST wraps a BST with an RWMutex for concurrent access.
 type SyncBST[T Entry] struct {
 	mux sync.RWMutex
