@@ -1,35 +1,44 @@
 package bst
 
-import (
-	"log"
+// Cursor navigates entries in a BST.
+type Cursor[T Entry] struct {
+	b BST[T]
 
-	"github.com/itsmontoya/mappedslice"
-)
-
-type Cursor[K any, V any] struct {
-	r *Raw[K, V]
-	c mappedslice.Cursor[KV[K, V]]
+	index int
 }
 
-func (c *Cursor[K, V]) Seek(seekTo K) (kv KV[K, V], err error) {
-	index, _, err := c.r.getIndex(seekTo)
-	if err != nil {
-		log.Printf("error getting index for <%v>: %v", seekTo, err)
-		return
+// Seek positions the cursor at key and returns the matching entry.
+func (c *Cursor[T]) Seek(key string) (val T, ok bool) {
+	var (
+		out   T
+		match bool
+	)
+
+	if out, c.index, match = c.b.get(key); match {
+		return out, true
 	}
 
-	return c.c.Seek(index)
+	return val, false
 }
 
-func (c *Cursor[K, V]) Next() (kv KV[K, V], err error) {
-	return c.c.Next()
+// Prev moves the cursor to the previous entry.
+func (c *Cursor[T]) Prev() (val T, ok bool) {
+	if c.index-1 < 0 {
+		return val, false
+	}
+
+	c.index--
+
+	return c.b[c.index], true
 }
 
-func (c *Cursor[K, V]) Prev() (kv KV[K, V], err error) {
-	return c.c.Prev()
-}
+// Next moves the cursor to the next entry.
+func (c *Cursor[T]) Next() (val T, ok bool) {
+	if c.index+1 >= len(c.b) {
+		return val, false
+	}
 
-func (c *Cursor[K, V]) Close() {
-	c.r = nil
-	c.c = nil
+	c.index++
+
+	return c.b[c.index], true
 }
