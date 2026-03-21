@@ -6,14 +6,16 @@ var exampleCursor *Cursor[testEntry]
 
 func ExampleCursor() {
 	exampleCursor = exampleBST.Cursor()
+
+	// Output:
 }
 
 func ExampleCursor_Seek() {
-	val, ok := exampleCursor.Seek("c")
-	fmt.Printf("cursor.Seek(%q): %v / %v\n", "c", val, ok)
+	val, ok := exampleCursor.Seek("d")
+	fmt.Printf("cursor.Seek(%q): %v / %v\n", "d", val, ok)
 
 	// Output:
-	// cursor.Seek("c"): {c charlie} / true
+	// cursor.Seek("d"): {d delta} / true
 }
 
 func ExampleCursor_Prev() {
@@ -21,7 +23,7 @@ func ExampleCursor_Prev() {
 	fmt.Printf("cursor.Prev(): %v / %v\n", val, ok)
 
 	// Output:
-	// cursor.Prev(): {b bravo} / true
+	// cursor.Prev(): {c charlie} / true
 }
 
 func ExampleCursor_Next() {
@@ -29,5 +31,5 @@ func ExampleCursor_Next() {
 	fmt.Printf("cursor.Next(): %v / %v\n", val, ok)
 
 	// Output:
-	// cursor.Next(): {c charlie} / true
+	// cursor.Next(): {d delta} / true
 }

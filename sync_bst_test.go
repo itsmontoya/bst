@@ -382,6 +382,8 @@ func TestSyncBSTRemove(t *testing.T) {
 
 func ExampleSyncBST() {
 	exampleSyncBST = NewSync[testEntry](1024)
+
+	// Output:
 }
 
 func ExampleSyncBST_Insert() {
@@ -389,6 +391,8 @@ func ExampleSyncBST_Insert() {
 	exampleSyncBST.Insert(testEntry{key: "b", value: "bravo"})
 	exampleSyncBST.Insert(testEntry{key: "c", value: "charlie"})
 	exampleSyncBST.Insert(testEntry{key: "d", value: "delta"})
+
+	// Output:
 }
 
 func ExampleSyncBST_Get() {
