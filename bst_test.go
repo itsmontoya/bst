@@ -23,7 +23,7 @@ func ExampleBST_Insert() {
 
 	fmt.Printf("exampleBST: %v\n", exampleBST)
 	// Output:
-	// exampleBST: [{a alpha}, {b bravo}, {c charlie}, {d delta}]
+	// exampleBST: [{a alpha} {b bravo} {c charlie} {d delta}]
 }
 
 func ExampleBST_Get() {
@@ -31,7 +31,7 @@ func ExampleBST_Get() {
 
 	fmt.Printf("exampleBST.Get(%q): %v / %v\n", "a", val, ok)
 	// Output:
-	// tree.Get("a"): {a alpha} / true
+	// exampleBST.Get("a"): {a alpha} / true
 }
 
 func ExampleBST_ForEach() {
@@ -43,10 +43,10 @@ func ExampleBST_ForEach() {
 	}
 
 	// Output:
-	// tree.ForEach(): {a alpha}
-	// tree.ForEach(): {b bravo}
-	// tree.ForEach(): {c charlie}
-	// tree.ForEach(): {d delta}
+	// exampleBST.ForEach(): {a alpha}
+	// exampleBST.ForEach(): {b bravo}
+	// exampleBST.ForEach(): {c charlie}
+	// exampleBST.ForEach(): {d delta}
 }
 
 func ExampleBST_Cursor() {
@@ -61,7 +61,7 @@ func ExampleBST_Cursor() {
 func ExampleBST_Remove() {
 	exampleBST.Remove("b")
 
-	fmt.Printf("exampleBST: %v\n", exampleBST)
+	fmt.Printf("exampleBS.Remove(): %v\n", exampleBST)
 	// Output:
-	// tree: [{a alpha} {c charlie}]
+	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
 }
