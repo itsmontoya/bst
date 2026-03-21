@@ -52,3 +52,10 @@ func (b *SyncBST[T]) Remove(key string) {
 	defer b.mux.Unlock()
 	b.b.Remove(key)
 }
+
+// Length returns the number of entries under a read lock.
+func (b *SyncBST[T]) Length() (n int) {
+	b.mux.RLock()
+	defer b.mux.RUnlock()
+	return len(b.b)
+}
