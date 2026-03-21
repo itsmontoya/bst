@@ -1,0 +1,58 @@
+package bst
+
+import (
+	"fmt"
+	"log"
+)
+
+var exampleBST BST[testEntry]
+
+func ExampleBST() {
+	exampleBST = make(BST[testEntry], 0, 1024)
+}
+
+func ExampleBST_Insert() {
+	exampleBST.Insert(testEntry{key: "a", value: "alpha"})
+	exampleBST.Insert(testEntry{key: "b", value: "bravo"})
+	exampleBST.Insert(testEntry{key: "c", value: "charlie"})
+	exampleBST.Insert(testEntry{key: "d", value: "delta"})
+	fmt.Printf("exampleBST: %v\n", exampleBST)
+
+	// Output:
+	// exampleBST: [{a alpha} {b bravo} {c charlie} {d delta}]
+}
+
+func ExampleBST_Get() {
+	val, ok := exampleBST.Get("a")
+	fmt.Printf("exampleBST.Get(%q): %v / %v\n", "a", val, ok)
+
+	// Output:
+	// exampleBST.Get("a"): {a alpha} / true
+}
+
+func ExampleBST_ForEach() {
+	if err := exampleBST.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleBST.ForEach(): %v\n", te)
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleBST.ForEach(): {a alpha}
+	// exampleBST.ForEach(): {b bravo}
+	// exampleBST.ForEach(): {c charlie}
+	// exampleBST.ForEach(): {d delta}
+}
+
+func ExampleBST_Cursor() {
+	exampleCursor = exampleBST.Cursor()
+}
+
+func ExampleBST_Remove() {
+	exampleBST.Remove("b")
+	fmt.Printf("exampleBS.Remove(): %v\n", exampleBST)
+
+	// Output:
+	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
+}

@@ -2,9 +2,13 @@ package bst
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"slices"
 	"testing"
 )
+
+var exampleSyncBST *SyncBST[testEntry]
 
 func TestSyncBSTGet(t *testing.T) {
 	t.Parallel()
@@ -374,6 +378,65 @@ func TestSyncBSTRemove(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleSyncBST() {
+	exampleSyncBST = NewSync[testEntry](1024)
+
+	// Output:
+}
+
+func ExampleSyncBST_Insert() {
+	exampleSyncBST.Insert(testEntry{key: "a", value: "alpha"})
+	exampleSyncBST.Insert(testEntry{key: "b", value: "bravo"})
+	exampleSyncBST.Insert(testEntry{key: "c", value: "charlie"})
+	exampleSyncBST.Insert(testEntry{key: "d", value: "delta"})
+
+	// Output:
+}
+
+func ExampleSyncBST_Get() {
+	val, ok := exampleSyncBST.Get("a")
+	fmt.Printf("exampleSyncBST.Get(%q): %v / %v\n", "a", val, ok)
+
+	// Output:
+	// exampleSyncBST.Get("a"): {a alpha} / true
+}
+
+func ExampleSyncBST_ForEach() {
+	if err := exampleSyncBST.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleSyncBST.ForEach(): %v\n", te)
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleSyncBST.ForEach(): {a alpha}
+	// exampleSyncBST.ForEach(): {b bravo}
+	// exampleSyncBST.ForEach(): {c charlie}
+	// exampleSyncBST.ForEach(): {d delta}
+}
+
+func ExampleSyncBST_Cursor() {
+	if err := exampleSyncBST.Cursor(func(cursor *Cursor[testEntry]) error {
+		val, ok := cursor.Seek("b")
+		fmt.Printf("cursor.Seek(%q): %v / %v\n", "b", val, ok)
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// cursor.Seek("b"): {b bravo} / true
+}
+
+func ExampleSyncBST_Remove() {
+	exampleSyncBST.Remove("b")
+	fmt.Printf("exampleSyncBST.Length(): %d\n", exampleSyncBST.Length())
+
+	// Output:
+	// exampleSyncBST.Length(): 3
 }
 
 func syncBSTFromEntries(entries ...testEntry) *SyncBST[testEntry] {

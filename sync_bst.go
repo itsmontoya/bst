@@ -2,6 +2,12 @@ package bst
 
 import "sync"
 
+func NewSync[T Entry](length int) (out *SyncBST[T]) {
+	var s SyncBST[T]
+	s.b = make(BST[T], 0, length)
+	return &s
+}
+
 // SyncBST wraps a BST with an RWMutex for concurrent access.
 type SyncBST[T Entry] struct {
 	mux sync.RWMutex
@@ -45,4 +51,11 @@ func (b *SyncBST[T]) Remove(key string) {
 	b.mux.Lock()
 	defer b.mux.Unlock()
 	b.b.Remove(key)
+}
+
+// Length returns the number of entries under a read lock.
+func (b *SyncBST[T]) Length() (n int) {
+	b.mux.RLock()
+	defer b.mux.RUnlock()
+	return len(b.b)
 }
