@@ -28,21 +28,7 @@ then a sorted structure like `bst` can be a better fit.
 
 ## Examples
 
-Below are quick API examples.
-
-### Entry
-```go
-type userEntry struct {
-	id   int
-	name string
-}
-
-func (u userEntry) Key() string {
-	return u.name
-}
-```
-
-### BST
+### Initialize BST
 ```go
 func ExampleBST() {
 	users := make(bst.BST[userEntry], 0, 8)
