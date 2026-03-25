@@ -26,15 +26,6 @@ If your workload needs:
 
 then a sorted structure like `bst` can be a better fit.
 
-## Example Use Case
-
-Imagine maintaining an in-memory index of users by username:
-
-- `Insert` updates or adds user records
-- `Get` resolves an exact username quickly
-- `ForEach` emits records in sorted order for deterministic output
-- `Cursor` enables stepping to adjacent usernames for paging-style flows
-
 ## Examples
 
 Below are quick API examples.
