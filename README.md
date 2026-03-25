@@ -5,6 +5,8 @@
 [Report Card Badge]: https://goreportcard.com/badge/github.com/itsmontoya/bst
 [Report Card URL]: https://goreportcard.com/report/github.com/itsmontoya/bst
 
+![banner](https://res.cloudinary.com/dryepxxoy/image/upload/v1774414470/bst_1920_lpr9y2.webp "BST banner")
+
 `bst` is a Go library that provides a **sorted string-keyed collection** with binary-search lookups.
 
 It stores entries in key order, supports in-place insert/replace semantics, and includes cursor helpers for neighbor traversal.
@@ -268,3 +270,5 @@ A cursor can seek to a key, then move to adjacent entries with `Prev` and `Next`
 `BST` is not synchronized.
 
 `SyncBST` provides thread-safe access by wrapping operations with an `RWMutex`.
+
+![footer](https://res.cloudinary.com/dryepxxoy/image/upload/v1774414470/bst_footer_1920_ia720l.webp "BST footer")
