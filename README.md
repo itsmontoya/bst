@@ -271,4 +271,23 @@ A cursor can seek to a key, then move to adjacent entries with `Prev` and `Next`
 
 `SyncBST` provides thread-safe access by wrapping operations with an `RWMutex`.
 
+## AI Usage and Authorship
+
+This project is intentionally **human-authored** for all logic.
+
+To be explicit:
+
+- AI does **not** write or modify non-test code in this repository.
+- AI does **not** make architectural or behavioral decisions.
+- AI may assist with documentation, comments, and test scaffolding only.
+- All implementation logic is written and reviewed by human maintainers.
+
+These boundaries are enforced in `AGENTS.md` and are part of this repository's contribution discipline.
+
+## Contributors
+
+- Human maintainers: library design, implementation, and behavior decisions.
+- ChatGPT Codex: documentation, test coverage support, and comments.
+- Google Gemini: README artwork generation.
+
 ![footer](https://res.cloudinary.com/dryepxxoy/image/upload/v1774414470/bst_footer_1920_ia720l.webp "BST footer")
