@@ -1,7 +1,10 @@
-# bst &emsp; [![GoDoc][GoDoc Badge]][GoDoc URL] [![Go Report Card][Report Card Badge]][Report Card URL]
+# bst &emsp; [![GoDoc][GoDoc Badge]][GoDoc URL] ![Coverage] [![Go Report Card][Report Card Badge]][Report Card URL] [![MIT licensed][License Badge]][License URL]
 
 [GoDoc Badge]: https://pkg.go.dev/badge/github.com/itsmontoya/bst
 [GoDoc URL]: https://pkg.go.dev/github.com/itsmontoya/bst
+[Coverage]: https://img.shields.io/badge/coverage-100%25-brightgreen
+[License Badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[License URL]: https://github.com/itsmontoya/bst/blob/main/LICENSE
 [Report Card Badge]: https://goreportcard.com/badge/github.com/itsmontoya/bst
 [Report Card URL]: https://goreportcard.com/report/github.com/itsmontoya/bst
 
