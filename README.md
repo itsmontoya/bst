@@ -142,6 +142,28 @@ func ExampleCursor_Next() {
 }
 ```
 
+### Cursor.First
+```go
+func ExampleCursor_First() {
+	val, ok := exampleCursor.First()
+	fmt.Printf("cursor.First(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.First(): {a alpha} / true
+}
+```
+
+### Cursor.Last
+```go
+func ExampleCursor_Last() {
+	val, ok := exampleCursor.Last()
+	fmt.Printf("cursor.Last(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.Last(): {d delta} / true
+}
+```
+
 ### NewSync
 ```go
 func ExampleNewSync() {
