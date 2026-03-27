@@ -129,96 +129,15 @@ func TestSyncBSTCursor(t *testing.T) {
 		testEntry{key: "e", value: "echo"},
 	)
 
-	tests := []struct {
-		name string
-		run  func(*testing.T, *SyncBST[testEntry])
-	}{
-		{
-			name: "seek existing and navigate neighbors",
-			run: func(t *testing.T, tree *SyncBST[testEntry]) {
-				err := tree.Cursor(func(c *Cursor[testEntry]) error {
-					got, ok := c.Seek("c")
-					if !ok || got.key != "c" {
-						t.Fatalf("Seek(%q) = (%#v, %v), want key %q and ok=true", "c", got, ok, "c")
-					}
+	err := tree.Cursor(func(cursor *Cursor[testEntry]) error {
+		if cursor == nil {
+			t.Fatal("Cursor() passed nil cursor")
+		}
 
-					prev, ok := c.Prev()
-					if !ok || prev.key != "a" {
-						t.Fatalf("Prev() = (%#v, %v), want key %q and ok=true", prev, ok, "a")
-					}
-
-					next, ok := c.Next()
-					if !ok || next.key != "c" {
-						t.Fatalf("Next() = (%#v, %v), want key %q and ok=true", next, ok, "c")
-					}
-
-					return nil
-				})
-				if err != nil {
-					t.Fatalf("Cursor() error = %v, want nil", err)
-				}
-			},
-		},
-		{
-			name: "seek missing returns false",
-			run: func(t *testing.T, tree *SyncBST[testEntry]) {
-				err := tree.Cursor(func(c *Cursor[testEntry]) error {
-					got, ok := c.Seek("d")
-					if ok {
-						t.Fatalf("Seek(%q) = (%#v, %v), want ok=false", "d", got, ok)
-					}
-
-					return nil
-				})
-				if err != nil {
-					t.Fatalf("Cursor() error = %v, want nil", err)
-				}
-			},
-		},
-		{
-			name: "prev at beginning returns false",
-			run: func(t *testing.T, tree *SyncBST[testEntry]) {
-				err := tree.Cursor(func(c *Cursor[testEntry]) error {
-					_, _ = c.Seek("a")
-
-					got, ok := c.Prev()
-					if ok {
-						t.Fatalf("Prev() = (%#v, %v), want ok=false", got, ok)
-					}
-
-					return nil
-				})
-				if err != nil {
-					t.Fatalf("Cursor() error = %v, want nil", err)
-				}
-			},
-		},
-		{
-			name: "next at end returns false",
-			run: func(t *testing.T, tree *SyncBST[testEntry]) {
-				err := tree.Cursor(func(c *Cursor[testEntry]) error {
-					_, _ = c.Seek("e")
-
-					got, ok := c.Next()
-					if ok {
-						t.Fatalf("Next() = (%#v, %v), want ok=false", got, ok)
-					}
-
-					return nil
-				})
-				if err != nil {
-					t.Fatalf("Cursor() error = %v, want nil", err)
-				}
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.run(t, tree)
-		})
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("Cursor() error = %v, want nil", err)
 	}
 }
 

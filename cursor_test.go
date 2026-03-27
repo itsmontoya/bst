@@ -7,6 +7,165 @@ import (
 
 var exampleCursor *Cursor[testEntry]
 
+func TestCursorSeek(t *testing.T) {
+	t.Parallel()
+
+	tree := cursorBSTFromEntries(
+		testEntry{key: "a", value: "alpha"},
+		testEntry{key: "c", value: "charlie"},
+		testEntry{key: "e", value: "echo"},
+	)
+
+	tests := []struct {
+		name   string
+		key    string
+		want   testEntry
+		wantOK bool
+	}{
+		{
+			name:   "hit",
+			key:    "c",
+			want:   testEntry{key: "c", value: "charlie"},
+			wantOK: true,
+		},
+		{
+			name:   "miss between entries",
+			key:    "d",
+			wantOK: false,
+		},
+		{
+			name:   "miss after last entry",
+			key:    "z",
+			wantOK: false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			cursor := tree.Cursor()
+			got, gotOK := cursor.Seek(tt.key)
+			if gotOK != tt.wantOK {
+				t.Fatalf("Seek(%q) ok = %v, want %v", tt.key, gotOK, tt.wantOK)
+			}
+
+			if got != tt.want {
+				t.Fatalf("Seek(%q) = %#v, want %#v", tt.key, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCursorPrev(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		key    string
+		want   testEntry
+		wantOK bool
+		seekOK bool
+	}{
+		{
+			name:   "returns previous entry",
+			key:    "c",
+			want:   testEntry{key: "a", value: "alpha"},
+			wantOK: true,
+			seekOK: true,
+		},
+		{
+			name:   "at beginning returns false",
+			key:    "a",
+			wantOK: false,
+			seekOK: true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			tree := cursorBSTFromEntries(
+				testEntry{key: "a", value: "alpha"},
+				testEntry{key: "c", value: "charlie"},
+				testEntry{key: "e", value: "echo"},
+			)
+
+			cursor := tree.Cursor()
+			_, seekOK := cursor.Seek(tt.key)
+			if seekOK != tt.seekOK {
+				t.Fatalf("Seek(%q) ok = %v, want %v", tt.key, seekOK, tt.seekOK)
+			}
+
+			got, gotOK := cursor.Prev()
+			if gotOK != tt.wantOK {
+				t.Fatalf("Prev() ok = %v, want %v", gotOK, tt.wantOK)
+			}
+
+			if got != tt.want {
+				t.Fatalf("Prev() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCursorNext(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		key    string
+		want   testEntry
+		wantOK bool
+		seekOK bool
+	}{
+		{
+			name:   "returns next entry",
+			key:    "c",
+			want:   testEntry{key: "e", value: "echo"},
+			wantOK: true,
+			seekOK: true,
+		},
+		{
+			name:   "at end returns false",
+			key:    "e",
+			wantOK: false,
+			seekOK: true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			tree := cursorBSTFromEntries(
+				testEntry{key: "a", value: "alpha"},
+				testEntry{key: "c", value: "charlie"},
+				testEntry{key: "e", value: "echo"},
+			)
+
+			cursor := tree.Cursor()
+			_, seekOK := cursor.Seek(tt.key)
+			if seekOK != tt.seekOK {
+				t.Fatalf("Seek(%q) ok = %v, want %v", tt.key, seekOK, tt.seekOK)
+			}
+
+			got, gotOK := cursor.Next()
+			if gotOK != tt.wantOK {
+				t.Fatalf("Next() ok = %v, want %v", gotOK, tt.wantOK)
+			}
+
+			if got != tt.want {
+				t.Fatalf("Next() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCursorFirst(t *testing.T) {
 	t.Parallel()
 
