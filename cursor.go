@@ -42,3 +42,23 @@ func (c *Cursor[T]) Next() (val T, ok bool) {
 
 	return c.b[c.index], true
 }
+
+func (c *Cursor[T]) First() (val T, ok bool) {
+	if len(c.b) == 0 {
+		return val, false
+	}
+
+	c.index = 0
+
+	return c.b[c.index], true
+}
+
+func (c *Cursor[T]) Last() (val T, ok bool) {
+	if len(c.b) == 0 {
+		return val, false
+	}
+
+	c.index = len(c.b) - 1
+
+	return c.b[c.index], true
+}
