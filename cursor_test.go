@@ -298,6 +298,22 @@ func ExampleCursor_Next() {
 	// cursor.Next(): {d delta} / true
 }
 
+func ExampleCursor_First() {
+	val, ok := exampleCursor.First()
+	fmt.Printf("cursor.First(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.First(): {a alpha} / true
+}
+
+func ExampleCursor_Last() {
+	val, ok := exampleCursor.Last()
+	fmt.Printf("cursor.Last(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.Last(): {d delta} / true
+}
+
 func cursorBSTFromEntries(entries ...testEntry) (tree BST[testEntry]) {
 	tree = make(BST[testEntry], 0, len(entries))
 	for _, entry := range entries {
