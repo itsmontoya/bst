@@ -5,8 +5,6 @@ import (
 	"testing"
 )
 
-var exampleCursor *Cursor[testEntry]
-
 func TestCursorSeek(t *testing.T) {
 	t.Parallel()
 
@@ -269,13 +267,18 @@ func TestCursorLast(t *testing.T) {
 }
 
 func ExampleCursor() {
-	exampleCursor = exampleBST.Cursor()
+	tree := exampleBSTWithEntries()
+
+	_ = tree.Cursor()
 
 	// Output:
 }
 
 func ExampleCursor_Seek() {
-	val, ok := exampleCursor.Seek("d")
+	tree := exampleBSTWithEntries()
+	cursor := tree.Cursor()
+
+	val, ok := cursor.Seek("d")
 	fmt.Printf("cursor.Seek(%q): %v / %v\n", "d", val, ok)
 
 	// Output:
@@ -283,7 +286,11 @@ func ExampleCursor_Seek() {
 }
 
 func ExampleCursor_Prev() {
-	val, ok := exampleCursor.Prev()
+	tree := exampleBSTWithEntries()
+	cursor := tree.Cursor()
+	_, _ = cursor.Seek("d")
+
+	val, ok := cursor.Prev()
 	fmt.Printf("cursor.Prev(): %v / %v\n", val, ok)
 
 	// Output:
@@ -291,7 +298,11 @@ func ExampleCursor_Prev() {
 }
 
 func ExampleCursor_Next() {
-	val, ok := exampleCursor.Next()
+	tree := exampleBSTWithEntries()
+	cursor := tree.Cursor()
+	_, _ = cursor.Seek("c")
+
+	val, ok := cursor.Next()
 	fmt.Printf("cursor.Next(): %v / %v\n", val, ok)
 
 	// Output:
@@ -299,7 +310,10 @@ func ExampleCursor_Next() {
 }
 
 func ExampleCursor_First() {
-	val, ok := exampleCursor.First()
+	tree := exampleBSTWithEntries()
+	cursor := tree.Cursor()
+
+	val, ok := cursor.First()
 	fmt.Printf("cursor.First(): %v / %v\n", val, ok)
 
 	// Output:
@@ -307,7 +321,10 @@ func ExampleCursor_First() {
 }
 
 func ExampleCursor_Last() {
-	val, ok := exampleCursor.Last()
+	tree := exampleBSTWithEntries()
+	cursor := tree.Cursor()
+
+	val, ok := cursor.Last()
 	fmt.Printf("cursor.Last(): %v / %v\n", val, ok)
 
 	// Output:
