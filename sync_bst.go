@@ -2,6 +2,7 @@ package bst
 
 import "sync"
 
+// NewSync creates a SyncBST preallocated with capacity length.
 func NewSync[T Entry](length int) (out *SyncBST[T]) {
 	var s SyncBST[T]
 	s.b = make(BST[T], 0, length)
@@ -22,7 +23,10 @@ func (b *SyncBST[T]) Get(key string) (out T, ok bool) {
 	return b.b.Get(key)
 }
 
-// ForEach calls fn for each entry in key order under a read lock.
+// ForEach calls fn for each entry in key order while holding a read lock.
+//
+// fn executes before the read lock is released. Calling write methods on the
+// same SyncBST instance from fn (for example Insert or Remove) can self-deadlock.
 func (b *SyncBST[T]) ForEach(fn func(T) error) (err error) {
 	b.mux.RLock()
 	defer b.mux.RUnlock()
@@ -30,13 +34,15 @@ func (b *SyncBST[T]) ForEach(fn func(T) error) (err error) {
 }
 
 // Cursor calls fn with a cursor while holding a read lock.
+//
+// fn executes before the read lock is released. Calling write methods on the
+// same SyncBST instance from fn (for example Insert or Remove) can self-deadlock.
 func (b *SyncBST[T]) Cursor(fn func(*Cursor[T]) error) (err error) {
 	b.mux.RLock()
 	defer b.mux.RUnlock()
 	c := b.b.Cursor()
-	err = fn(c)
-	c.b = nil
-	return
+	defer c.cleanup()
+	return fn(c)
 }
 
 // Insert adds val or replaces the existing entry with the same key under a write lock.
