@@ -7,21 +7,35 @@ type Cursor[T Entry] struct {
 	index int
 }
 
-// Seek positions the cursor at key and returns the matching entry.
+// Seek positions the cursor using BST search semantics and returns a value at or after key.
+//
+// If key is present, Seek returns the matching entry and ok=true.
+//
+// If key is missing but there is a later entry, Seek returns that next larger entry and ok=true.
+//
+// If key is after the last entry, Seek returns (zero, false).
+//
+// Note: ok reports whether a value was found at or after key, not whether key matched exactly.
 func (c *Cursor[T]) Seek(key string) (val T, ok bool) {
 	var (
-		out   T
-		match bool
+		out T
+		i   int
 	)
 
-	if out, c.index, match = c.b.get(key); match {
-		return out, true
+	if out, i, _ = c.b.get(key); i >= len(c.b) {
+		return val, false
 	}
 
-	return val, false
+	return out, true
 }
 
-// Prev moves the cursor to the previous entry.
+// Prev moves the cursor to the previous entry relative to the current index.
+//
+// After Seek miss, Prev uses the insertion index semantics from Seek.
+// Examples:
+//   - miss before first: Prev() returns (zero, false)
+//   - miss between entries: Prev() returns the lower neighbor
+//   - miss after last: Prev() returns the last entry
 func (c *Cursor[T]) Prev() (val T, ok bool) {
 	if c.index-1 < 0 {
 		return val, false
@@ -32,7 +46,13 @@ func (c *Cursor[T]) Prev() (val T, ok bool) {
 	return c.b[c.index], true
 }
 
-// Next moves the cursor to the next entry.
+// Next moves the cursor to the next entry relative to the current index.
+//
+// After Seek miss, Next uses the insertion index semantics from Seek.
+// Examples:
+//   - miss before first: Next() returns the second entry (if present)
+//   - miss between entries: Next() returns (zero, false)
+//   - miss after last: Next() returns (zero, false)
 func (c *Cursor[T]) Next() (val T, ok bool) {
 	if c.index+1 >= len(c.b) {
 		return val, false
