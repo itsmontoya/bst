@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-var exampleSyncBST *SyncBST[testEntry]
-
 func TestSyncBSTGet(t *testing.T) {
 	t.Parallel()
 
@@ -300,22 +298,28 @@ func TestSyncBSTRemove(t *testing.T) {
 }
 
 func ExampleSyncBST() {
-	exampleSyncBST = NewSync[testEntry](1024)
+	tree := NewSync[testEntry](1024)
+
+	_ = tree
 
 	// Output:
 }
 
 func ExampleSyncBST_Insert() {
-	exampleSyncBST.Insert(testEntry{key: "a", value: "alpha"})
-	exampleSyncBST.Insert(testEntry{key: "b", value: "bravo"})
-	exampleSyncBST.Insert(testEntry{key: "c", value: "charlie"})
-	exampleSyncBST.Insert(testEntry{key: "d", value: "delta"})
+	tree := NewSync[testEntry](1024)
+
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	// Output:
 }
 
 func ExampleSyncBST_Get() {
-	val, ok := exampleSyncBST.Get("a")
+	tree := exampleSyncBSTWithEntries()
+
+	val, ok := tree.Get("a")
 	fmt.Printf("exampleSyncBST.Get(%q): %v / %v\n", "a", val, ok)
 
 	// Output:
@@ -323,7 +327,9 @@ func ExampleSyncBST_Get() {
 }
 
 func ExampleSyncBST_ForEach() {
-	if err := exampleSyncBST.ForEach(func(te testEntry) error {
+	tree := exampleSyncBSTWithEntries()
+
+	if err := tree.ForEach(func(te testEntry) error {
 		fmt.Printf("exampleSyncBST.ForEach(): %v\n", te)
 		return nil
 	}); err != nil {
@@ -338,7 +344,9 @@ func ExampleSyncBST_ForEach() {
 }
 
 func ExampleSyncBST_Cursor() {
-	if err := exampleSyncBST.Cursor(func(cursor *Cursor[testEntry]) error {
+	tree := exampleSyncBSTWithEntries()
+
+	if err := tree.Cursor(func(cursor *Cursor[testEntry]) error {
 		val, ok := cursor.Seek("b")
 		fmt.Printf("cursor.Seek(%q): %v / %v\n", "b", val, ok)
 		return nil
@@ -351,11 +359,23 @@ func ExampleSyncBST_Cursor() {
 }
 
 func ExampleSyncBST_Remove() {
-	exampleSyncBST.Remove("b")
-	fmt.Printf("exampleSyncBST.Length(): %d\n", exampleSyncBST.Length())
+	tree := exampleSyncBSTWithEntries()
+
+	tree.Remove("b")
+	fmt.Printf("exampleSyncBST.Length(): %d\n", tree.Length())
 
 	// Output:
 	// exampleSyncBST.Length(): 3
+}
+
+func exampleSyncBSTWithEntries() (tree *SyncBST[testEntry]) {
+	tree = syncBSTFromEntries(
+		testEntry{key: "a", value: "alpha"},
+		testEntry{key: "b", value: "bravo"},
+		testEntry{key: "c", value: "charlie"},
+		testEntry{key: "d", value: "delta"},
+	)
+	return tree
 }
 
 func syncBSTFromEntries(entries ...testEntry) *SyncBST[testEntry] {
