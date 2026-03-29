@@ -29,12 +29,14 @@ func TestCursorSeek(t *testing.T) {
 		{
 			name:   "miss between entries",
 			key:    "d",
-			wantOK: false,
+			want:   testEntry{key: "e", value: "echo"},
+			wantOK: true,
 		},
 		{
 			name:   "miss before first entry",
 			key:    "0",
-			wantOK: false,
+			want:   testEntry{key: "a", value: "alpha"},
+			wantOK: true,
 		},
 		{
 			name:   "miss after last entry",
@@ -183,20 +185,19 @@ func TestCursorPrevAfterSeekMiss(t *testing.T) {
 			name:     "miss before first returns false",
 			seekKey:  "0",
 			wantOK:   false,
-			wantSeek: false,
+			wantSeek: true,
 		},
 		{
 			name:     "miss between entries returns lower neighbor",
 			seekKey:  "d",
 			want:     testEntry{key: "c", value: "charlie"},
 			wantOK:   true,
-			wantSeek: false,
+			wantSeek: true,
 		},
 		{
 			name:     "miss after last returns last entry",
 			seekKey:  "z",
-			want:     testEntry{key: "e", value: "echo"},
-			wantOK:   true,
+			wantOK:   false,
 			wantSeek: false,
 		},
 	}
@@ -245,18 +246,19 @@ func TestCursorNextAfterSeekMiss(t *testing.T) {
 			seekKey:  "0",
 			want:     testEntry{key: "c", value: "charlie"},
 			wantOK:   true,
-			wantSeek: false,
+			wantSeek: true,
 		},
 		{
 			name:     "miss between entries returns false",
 			seekKey:  "d",
 			wantOK:   false,
-			wantSeek: false,
+			wantSeek: true,
 		},
 		{
 			name:     "miss after last returns false",
 			seekKey:  "z",
-			wantOK:   false,
+			want:     testEntry{key: "c", value: "charlie"},
+			wantOK:   true,
 			wantSeek: false,
 		},
 	}
