@@ -26,6 +26,7 @@ func (c *Cursor[T]) Seek(key string) (val T, ok bool) {
 		return val, false
 	}
 
+	c.index = i
 	return out, true
 }
 
