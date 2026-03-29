@@ -267,7 +267,11 @@ func TestCursorLast(t *testing.T) {
 }
 
 func ExampleCursor() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	_ = tree.Cursor()
 
@@ -275,7 +279,11 @@ func ExampleCursor() {
 }
 
 func ExampleCursor_Seek() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.Seek("d")
@@ -286,7 +294,11 @@ func ExampleCursor_Seek() {
 }
 
 func ExampleCursor_Prev() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 	cursor := tree.Cursor()
 	_, _ = cursor.Seek("d")
 
@@ -298,7 +310,11 @@ func ExampleCursor_Prev() {
 }
 
 func ExampleCursor_Next() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 	cursor := tree.Cursor()
 	_, _ = cursor.Seek("c")
 
@@ -310,7 +326,11 @@ func ExampleCursor_Next() {
 }
 
 func ExampleCursor_First() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.First()
@@ -321,7 +341,11 @@ func ExampleCursor_First() {
 }
 
 func ExampleCursor_Last() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.Last()
