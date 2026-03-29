@@ -5,25 +5,27 @@ import (
 	"log"
 )
 
-var exampleBST BST[testEntry]
-
 func ExampleBST() {
-	exampleBST = make(BST[testEntry], 0, 1024)
+	tree := make(BST[testEntry], 0, 1024)
+
+	_ = tree
+
+	// Output:
 }
 
 func ExampleBST_Insert() {
-	exampleBST.Insert(testEntry{key: "a", value: "alpha"})
-	exampleBST.Insert(testEntry{key: "b", value: "bravo"})
-	exampleBST.Insert(testEntry{key: "c", value: "charlie"})
-	exampleBST.Insert(testEntry{key: "d", value: "delta"})
-	fmt.Printf("exampleBST: %v\n", exampleBST)
+	tree := exampleBSTWithEntries()
+
+	fmt.Printf("exampleBST: %v\n", tree)
 
 	// Output:
 	// exampleBST: [{a alpha} {b bravo} {c charlie} {d delta}]
 }
 
 func ExampleBST_Get() {
-	val, ok := exampleBST.Get("a")
+	tree := exampleBSTWithEntries()
+
+	val, ok := tree.Get("a")
 	fmt.Printf("exampleBST.Get(%q): %v / %v\n", "a", val, ok)
 
 	// Output:
@@ -31,7 +33,9 @@ func ExampleBST_Get() {
 }
 
 func ExampleBST_ForEach() {
-	if err := exampleBST.ForEach(func(te testEntry) error {
+	tree := exampleBSTWithEntries()
+
+	if err := tree.ForEach(func(te testEntry) error {
 		fmt.Printf("exampleBST.ForEach(): %v\n", te)
 		return nil
 	}); err != nil {
@@ -46,13 +50,28 @@ func ExampleBST_ForEach() {
 }
 
 func ExampleBST_Cursor() {
-	exampleCursor = exampleBST.Cursor()
+	tree := exampleBSTWithEntries()
+
+	_ = tree.Cursor()
+
+	// Output:
 }
 
 func ExampleBST_Remove() {
-	exampleBST.Remove("b")
-	fmt.Printf("exampleBS.Remove(): %v\n", exampleBST)
+	tree := exampleBSTWithEntries()
+
+	tree.Remove("b")
+	fmt.Printf("exampleBS.Remove(): %v\n", tree)
 
 	// Output:
 	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
+}
+
+func exampleBSTWithEntries() (tree BST[testEntry]) {
+	tree = make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	return tree
 }
