@@ -14,7 +14,11 @@ func ExampleBST() {
 }
 
 func ExampleBST_Insert() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	fmt.Printf("exampleBST: %v\n", tree)
 
@@ -23,7 +27,11 @@ func ExampleBST_Insert() {
 }
 
 func ExampleBST_Get() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	val, ok := tree.Get("a")
 	fmt.Printf("exampleBST.Get(%q): %v / %v\n", "a", val, ok)
@@ -33,7 +41,11 @@ func ExampleBST_Get() {
 }
 
 func ExampleBST_ForEach() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	if err := tree.ForEach(func(te testEntry) error {
 		fmt.Printf("exampleBST.ForEach(): %v\n", te)
@@ -50,7 +62,11 @@ func ExampleBST_ForEach() {
 }
 
 func ExampleBST_Cursor() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	_ = tree.Cursor()
 
@@ -58,20 +74,15 @@ func ExampleBST_Cursor() {
 }
 
 func ExampleBST_Remove() {
-	tree := exampleBSTWithEntries()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
 	tree.Remove("b")
 	fmt.Printf("exampleBS.Remove(): %v\n", tree)
 
 	// Output:
 	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
-}
-
-func exampleBSTWithEntries() (tree BST[testEntry]) {
-	tree = make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
-	return tree
 }
