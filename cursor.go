@@ -64,3 +64,7 @@ func (c *Cursor[T]) Last() (val T, ok bool) {
 
 	return c.b[c.index], true
 }
+
+func (c *Cursor[T]) cleanup() {
+	c.b = nil
+}

@@ -209,6 +209,9 @@ func ExampleSyncBST_ForEach() {
 }
 ```
 
+`SyncBST.ForEach` runs the callback while `RLock` is held. Do not call `Insert` or `Remove`
+on that same `SyncBST` from inside the callback, or you can self-deadlock.
+
 ### SyncBST.Cursor
 ```go
 func ExampleSyncBST_Cursor() {
@@ -226,6 +229,9 @@ func ExampleSyncBST_Cursor() {
 	})
 }
 ```
+
+`SyncBST.Cursor` runs the callback while `RLock` is held. Do not call `Insert` or `Remove`
+on that same `SyncBST` from inside the callback, or you can self-deadlock.
 
 ### SyncBST.Remove
 ```go
@@ -272,6 +278,10 @@ A cursor can seek to a key, then move to adjacent entries with `Prev` and `Next`
 `BST` is not synchronized.
 
 `SyncBST` provides thread-safe access by wrapping operations with an `RWMutex`.
+
+`SyncBST.ForEach` and `SyncBST.Cursor` hold `RLock` for the entire callback execution.
+Callbacks should be read-only with respect to the same `SyncBST` instance.
+Calling `Insert` or `Remove` from those callbacks can self-deadlock.
 
 ## AI Usage and Authorship
 
