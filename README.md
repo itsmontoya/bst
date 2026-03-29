@@ -34,121 +34,166 @@ then a sorted structure like `bst` can be a better fit.
 ### Initialize BST
 ```go
 func ExampleBST() {
-	users := make(bst.BST[userEntry], 0, 8)
-	_ = users
+	tree := make(BST[testEntry], 0, 1024)
+
+	_ = tree
 }
 ```
 
 ### BST.Insert
 ```go
 func ExampleBST_Insert() {
-	users := make(bst.BST[userEntry], 0, 8)
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "carol"})
-	users.Insert(userEntry{id: 3, name: "bob"})
-	users.Insert(userEntry{id: 4, name: "carol"}) // replaces existing "carol"
+	fmt.Printf("exampleBST: %v\n", tree)
+
+	// Output:
+	// exampleBST: [{a alpha} {b bravo} {c charlie} {d delta}]
 }
 ```
 
 ### BST.Get
 ```go
 func ExampleBST_Get() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	entry, ok := users.Get("alice")
-	fmt.Println(entry.id, ok)
+	val, ok := tree.Get("a")
+	fmt.Printf("exampleBST.Get(%q): %v / %v\n", "a", val, ok)
+
+	// Output:
+	// exampleBST.Get("a"): {a alpha} / true
 }
 ```
 
 ### BST.ForEach
 ```go
 func ExampleBST_ForEach() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	_ = users.ForEach(func(entry userEntry) error {
-		fmt.Println(entry.name)
+	if err := tree.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleBST.ForEach(): %v\n", te)
 		return nil
-	})
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleBST.ForEach(): {a alpha}
+	// exampleBST.ForEach(): {b bravo}
+	// exampleBST.ForEach(): {c charlie}
+	// exampleBST.ForEach(): {d delta}
 }
 ```
 
 ### BST.Cursor
 ```go
 func ExampleBST_Cursor() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
-	users.Insert(userEntry{id: 3, name: "carol"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	cursor := users.Cursor()
-	_, _ = cursor.Seek("bob")
-	prev, _ := cursor.Prev()
-	next, _ := cursor.Next()
-
-	fmt.Println(prev.name, next.name)
+	_ = tree.Cursor()
 }
 ```
 
 ### BST.Remove
 ```go
 func ExampleBST_Remove() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	users.Remove("alice")
+	tree.Remove("b")
+	fmt.Printf("exampleBS.Remove(): %v\n", tree)
+
+	// Output:
+	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
 }
 ```
 
 ### Cursor.Seek
 ```go
 func ExampleCursor_Seek() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	cursor := tree.Cursor()
 
-	cursor := users.Cursor()
-	entry, ok := cursor.Seek("bob")
-	fmt.Println(entry.id, ok)
+	val, ok := cursor.Seek("d")
+	fmt.Printf("cursor.Seek(%q): %v / %v\n", "d", val, ok)
+
+	// Output:
+	// cursor.Seek("d"): {d delta} / true
 }
 ```
 
 ### Cursor.Prev
 ```go
 func ExampleCursor_Prev() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	cursor := tree.Cursor()
+	_, _ = cursor.Seek("d")
 
-	cursor := users.Cursor()
-	_, _ = cursor.Seek("bob")
-	entry, ok := cursor.Prev()
-	fmt.Println(entry.name, ok)
+	val, ok := cursor.Prev()
+	fmt.Printf("cursor.Prev(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.Prev(): {c charlie} / true
 }
 ```
 
 ### Cursor.Next
 ```go
 func ExampleCursor_Next() {
-	users := make(bst.BST[userEntry], 0, 8)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	cursor := tree.Cursor()
+	_, _ = cursor.Seek("c")
 
-	cursor := users.Cursor()
-	_, _ = cursor.Seek("alice")
-	entry, ok := cursor.Next()
-	fmt.Println(entry.name, ok)
+	val, ok := cursor.Next()
+	fmt.Printf("cursor.Next(): %v / %v\n", val, ok)
+
+	// Output:
+	// cursor.Next(): {d delta} / true
 }
 ```
 
 ### Cursor.First
 ```go
 func ExampleCursor_First() {
-	val, ok := exampleCursor.First()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	cursor := tree.Cursor()
+
+	val, ok := cursor.First()
 	fmt.Printf("cursor.First(): %v / %v\n", val, ok)
 
 	// Output:
@@ -159,7 +204,14 @@ func ExampleCursor_First() {
 ### Cursor.Last
 ```go
 func ExampleCursor_Last() {
-	val, ok := exampleCursor.Last()
+	tree := make(BST[testEntry], 0, 4)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
+	cursor := tree.Cursor()
+
+	val, ok := cursor.Last()
 	fmt.Printf("cursor.Last(): %v / %v\n", val, ok)
 
 	// Output:
@@ -167,45 +219,65 @@ func ExampleCursor_Last() {
 }
 ```
 
-### NewSync
+### Initialize SyncBST
 ```go
-func ExampleNewSync() {
-	users := bst.NewSync[userEntry](1024)
-	_ = users
+func ExampleSyncBST() {
+	tree := NewSync[testEntry](1024)
+
+	_ = tree
 }
 ```
 
 ### SyncBST.Insert
 ```go
 func ExampleSyncBST_Insert() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := NewSync[testEntry](1024)
+
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 }
 ```
 
 ### SyncBST.Get
 ```go
 func ExampleSyncBST_Get() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
+	tree := NewSync[testEntry](1024)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	entry, ok := users.Get("alice")
-	fmt.Println(entry.id, ok)
+	val, ok := tree.Get("a")
+	fmt.Printf("exampleSyncBST.Get(%q): %v / %v\n", "a", val, ok)
+
+	// Output:
+	// exampleSyncBST.Get("a"): {a alpha} / true
 }
 ```
 
 ### SyncBST.ForEach
 ```go
 func ExampleSyncBST_ForEach() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree := NewSync[testEntry](1024)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	_ = users.ForEach(func(entry userEntry) error {
-		fmt.Println(entry.name)
+	if err := tree.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleSyncBST.ForEach(): %v\n", te)
 		return nil
-	})
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleSyncBST.ForEach(): {a alpha}
+	// exampleSyncBST.ForEach(): {b bravo}
+	// exampleSyncBST.ForEach(): {c charlie}
+	// exampleSyncBST.ForEach(): {d delta}
 }
 ```
 
@@ -215,18 +287,22 @@ on that same `SyncBST` from inside the callback, or you can self-deadlock.
 ### SyncBST.Cursor
 ```go
 func ExampleSyncBST_Cursor() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
-	users.Insert(userEntry{id: 3, name: "carol"})
+	tree := NewSync[testEntry](1024)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-	_ = users.Cursor(func(cursor *bst.Cursor[userEntry]) error {
-		_, _ = cursor.Seek("bob")
-		prev, _ := cursor.Prev()
-		next, _ := cursor.Next()
-		fmt.Println(prev.name, next.name)
+	if err := tree.Cursor(func(cursor *Cursor[testEntry]) error {
+		val, ok := cursor.Seek("b")
+		fmt.Printf("cursor.Seek(%q): %v / %v\n", "b", val, ok)
 		return nil
-	})
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// cursor.Seek("b"): {b bravo} / true
 }
 ```
 
@@ -236,20 +312,17 @@ on that same `SyncBST` from inside the callback, or you can self-deadlock.
 ### SyncBST.Remove
 ```go
 func ExampleSyncBST_Remove() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Remove("alice")
-}
-```
+	tree := NewSync[testEntry](1024)
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+	tree.Insert(testEntry{key: "b", value: "bravo"})
+	tree.Insert(testEntry{key: "c", value: "charlie"})
+	tree.Insert(testEntry{key: "d", value: "delta"})
 
-### SyncBST.Length
-```go
-func ExampleSyncBST_Length() {
-	users := bst.NewSync[userEntry](1024)
-	users.Insert(userEntry{id: 1, name: "alice"})
-	users.Insert(userEntry{id: 2, name: "bob"})
+	tree.Remove("b")
+	fmt.Printf("exampleSyncBST.Length(): %d\n", tree.Length())
 
-	fmt.Println(users.Length())
+	// Output:
+	// exampleSyncBST.Length(): 3
 }
 ```
 
