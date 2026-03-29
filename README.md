@@ -228,6 +228,21 @@ func ExampleSyncBST() {
 }
 ```
 
+`SyncBST` has a usable zero value, so this is also valid:
+
+```go
+func ExampleSyncBST_ZeroValue() {
+	var tree SyncBST[testEntry]
+
+	tree.Insert(testEntry{key: "a", value: "alpha"})
+}
+```
+
+Use a non-nil value for method calls. `var tree *SyncBST[testEntry]` is nil, and
+calling methods on it panics.
+
+`NewSync(length int)` follows Go's `make` behavior: negative `length` panics.
+
 ### SyncBST.Insert
 ```go
 func ExampleSyncBST_Insert() {
