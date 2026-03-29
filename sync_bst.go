@@ -3,6 +3,9 @@ package bst
 import "sync"
 
 // NewSync creates a SyncBST preallocated with capacity length.
+//
+// length must be >= 0. A negative length panics (same behavior as make with
+// a negative capacity).
 func NewSync[T Entry](length int) (out *SyncBST[T]) {
 	var s SyncBST[T]
 	s.b = make(BST[T], 0, length)
@@ -10,6 +13,12 @@ func NewSync[T Entry](length int) (out *SyncBST[T]) {
 }
 
 // SyncBST wraps a BST with an RWMutex for concurrent access.
+//
+// The zero value is ready to use:
+//
+//	var s SyncBST[T]
+//
+// A nil *SyncBST is not valid. Calling methods on a nil pointer panics.
 type SyncBST[T Entry] struct {
 	mux sync.RWMutex
 
