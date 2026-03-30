@@ -9,9 +9,9 @@ func TestCursorSeek(t *testing.T) {
 	t.Parallel()
 
 	tree := cursorBSTFromEntries(
-		testEntry{key: "a", value: "alpha"},
-		testEntry{key: "c", value: "charlie"},
-		testEntry{key: "e", value: "echo"},
+		testEntry{K: "a", V: "alpha"},
+		testEntry{K: "c", V: "charlie"},
+		testEntry{K: "e", V: "echo"},
 	)
 
 	tests := []struct {
@@ -23,19 +23,19 @@ func TestCursorSeek(t *testing.T) {
 		{
 			name:   "hit",
 			key:    "c",
-			want:   testEntry{key: "c", value: "charlie"},
+			want:   testEntry{K: "c", V: "charlie"},
 			wantOK: true,
 		},
 		{
 			name:   "miss between entries",
 			key:    "d",
-			want:   testEntry{key: "e", value: "echo"},
+			want:   testEntry{K: "e", V: "echo"},
 			wantOK: true,
 		},
 		{
 			name:   "miss before first entry",
 			key:    "0",
-			want:   testEntry{key: "a", value: "alpha"},
+			want:   testEntry{K: "a", V: "alpha"},
 			wantOK: true,
 		},
 		{
@@ -76,7 +76,7 @@ func TestCursorPrev(t *testing.T) {
 		{
 			name:   "returns previous entry",
 			key:    "c",
-			want:   testEntry{key: "a", value: "alpha"},
+			want:   testEntry{K: "a", V: "alpha"},
 			wantOK: true,
 			seekOK: true,
 		},
@@ -94,9 +94,9 @@ func TestCursorPrev(t *testing.T) {
 			t.Parallel()
 
 			tree := cursorBSTFromEntries(
-				testEntry{key: "a", value: "alpha"},
-				testEntry{key: "c", value: "charlie"},
-				testEntry{key: "e", value: "echo"},
+				testEntry{K: "a", V: "alpha"},
+				testEntry{K: "c", V: "charlie"},
+				testEntry{K: "e", V: "echo"},
 			)
 
 			cursor := tree.Cursor()
@@ -130,7 +130,7 @@ func TestCursorNext(t *testing.T) {
 		{
 			name:   "returns next entry",
 			key:    "c",
-			want:   testEntry{key: "e", value: "echo"},
+			want:   testEntry{K: "e", V: "echo"},
 			wantOK: true,
 			seekOK: true,
 		},
@@ -148,9 +148,9 @@ func TestCursorNext(t *testing.T) {
 			t.Parallel()
 
 			tree := cursorBSTFromEntries(
-				testEntry{key: "a", value: "alpha"},
-				testEntry{key: "c", value: "charlie"},
-				testEntry{key: "e", value: "echo"},
+				testEntry{K: "a", V: "alpha"},
+				testEntry{K: "c", V: "charlie"},
+				testEntry{K: "e", V: "echo"},
 			)
 
 			cursor := tree.Cursor()
@@ -190,7 +190,7 @@ func TestCursorPrevAfterSeekMiss(t *testing.T) {
 		{
 			name:     "miss between entries returns lower neighbor",
 			seekKey:  "d",
-			want:     testEntry{key: "c", value: "charlie"},
+			want:     testEntry{K: "c", V: "charlie"},
 			wantOK:   true,
 			wantSeek: true,
 		},
@@ -208,9 +208,9 @@ func TestCursorPrevAfterSeekMiss(t *testing.T) {
 			t.Parallel()
 
 			tree := cursorBSTFromEntries(
-				testEntry{key: "a", value: "alpha"},
-				testEntry{key: "c", value: "charlie"},
-				testEntry{key: "e", value: "echo"},
+				testEntry{K: "a", V: "alpha"},
+				testEntry{K: "c", V: "charlie"},
+				testEntry{K: "e", V: "echo"},
 			)
 
 			cursor := tree.Cursor()
@@ -244,7 +244,7 @@ func TestCursorNextAfterSeekMiss(t *testing.T) {
 		{
 			name:     "miss before first returns second entry",
 			seekKey:  "0",
-			want:     testEntry{key: "c", value: "charlie"},
+			want:     testEntry{K: "c", V: "charlie"},
 			wantOK:   true,
 			wantSeek: true,
 		},
@@ -257,7 +257,7 @@ func TestCursorNextAfterSeekMiss(t *testing.T) {
 		{
 			name:     "miss after last returns false",
 			seekKey:  "z",
-			want:     testEntry{key: "c", value: "charlie"},
+			want:     testEntry{K: "c", V: "charlie"},
 			wantOK:   true,
 			wantSeek: false,
 		},
@@ -269,9 +269,9 @@ func TestCursorNextAfterSeekMiss(t *testing.T) {
 			t.Parallel()
 
 			tree := cursorBSTFromEntries(
-				testEntry{key: "a", value: "alpha"},
-				testEntry{key: "c", value: "charlie"},
-				testEntry{key: "e", value: "echo"},
+				testEntry{K: "a", V: "alpha"},
+				testEntry{K: "c", V: "charlie"},
+				testEntry{K: "e", V: "echo"},
 			)
 
 			cursor := tree.Cursor()
@@ -309,8 +309,8 @@ func TestCursorFirst(t *testing.T) {
 		},
 		{
 			name:    "returns first entry and positions cursor at beginning",
-			tree:    cursorBSTFromEntries(testEntry{key: "a", value: "alpha"}, testEntry{key: "c", value: "charlie"}, testEntry{key: "e", value: "echo"}),
-			want:    testEntry{key: "a", value: "alpha"},
+			tree:    cursorBSTFromEntries(testEntry{K: "a", V: "alpha"}, testEntry{K: "c", V: "charlie"}, testEntry{K: "e", V: "echo"}),
+			want:    testEntry{K: "a", V: "alpha"},
 			wantOK:  true,
 			wantKey: "c",
 		},
@@ -336,7 +336,7 @@ func TestCursorFirst(t *testing.T) {
 			}
 
 			next, nextOK := cursor.Next()
-			if !nextOK || next.key != tt.wantKey {
+			if !nextOK || next.K != tt.wantKey {
 				t.Fatalf("Next() = (%#v, %v), want key %q and ok=true", next, nextOK, tt.wantKey)
 			}
 		})
@@ -360,8 +360,8 @@ func TestCursorLast(t *testing.T) {
 		},
 		{
 			name:    "returns last entry and positions cursor at end",
-			tree:    cursorBSTFromEntries(testEntry{key: "a", value: "alpha"}, testEntry{key: "c", value: "charlie"}, testEntry{key: "e", value: "echo"}),
-			want:    testEntry{key: "e", value: "echo"},
+			tree:    cursorBSTFromEntries(testEntry{K: "a", V: "alpha"}, testEntry{K: "c", V: "charlie"}, testEntry{K: "e", V: "echo"}),
+			want:    testEntry{K: "e", V: "echo"},
 			wantOK:  true,
 			wantKey: "c",
 		},
@@ -387,7 +387,7 @@ func TestCursorLast(t *testing.T) {
 			}
 
 			prev, prevOK := cursor.Prev()
-			if !prevOK || prev.key != tt.wantKey {
+			if !prevOK || prev.K != tt.wantKey {
 				t.Fatalf("Prev() = (%#v, %v), want key %q and ok=true", prev, prevOK, tt.wantKey)
 			}
 		})
@@ -396,10 +396,10 @@ func TestCursorLast(t *testing.T) {
 
 func ExampleCursor() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	_ = tree.Cursor()
 
@@ -408,10 +408,10 @@ func ExampleCursor() {
 
 func ExampleCursor_Seek() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.Seek("d")
@@ -423,10 +423,10 @@ func ExampleCursor_Seek() {
 
 func ExampleCursor_Prev() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 	cursor := tree.Cursor()
 	_, _ = cursor.Seek("d")
 
@@ -439,10 +439,10 @@ func ExampleCursor_Prev() {
 
 func ExampleCursor_Next() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 	cursor := tree.Cursor()
 	_, _ = cursor.Seek("c")
 
@@ -455,10 +455,10 @@ func ExampleCursor_Next() {
 
 func ExampleCursor_First() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.First()
@@ -470,10 +470,10 @@ func ExampleCursor_First() {
 
 func ExampleCursor_Last() {
 	tree := make(BST[testEntry], 0, 4)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 	cursor := tree.Cursor()
 
 	val, ok := cursor.Last()

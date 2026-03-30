@@ -127,6 +127,25 @@ func ExampleBST_Remove() {
 }
 ```
 
+### BST.UnmarshalJSON
+
+Inbound JSON entries are sorted by `Key()` during unmarshal before assignment.
+
+```go
+func ExampleBST_UnmarshalJSON() {
+	var tree BST[testEntry]
+
+	if err := json.Unmarshal([]byte(`[{"key":"c","value":"charlie"},{"key":"a","value":"alpha"},{"key":"b","value":"bravo"}]`), &tree); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("exampleBST.UnmarshalJSON(): %v\n", tree)
+
+	// Output:
+	// exampleBST.UnmarshalJSON(): [{a alpha} {b bravo} {c charlie}]
+}
+```
+
 ### Cursor.Seek
 ```go
 func ExampleCursor_Seek() {
@@ -338,6 +357,50 @@ func ExampleSyncBST_Remove() {
 
 	// Output:
 	// exampleSyncBST.Length(): 3
+}
+```
+
+### SyncBST.MarshalJSON
+```go
+func ExampleSyncBST_MarshalJSON() {
+	tree := NewSync[testEntry](0)
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+
+	bs, err := json.Marshal(tree)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("exampleSyncBST.MarshalJSON(): %s\n", bs)
+
+	// Output:
+	// exampleSyncBST.MarshalJSON(): [{"key":"a","value":"alpha"},{"key":"b","value":"bravo"}]
+}
+```
+
+### SyncBST.UnmarshalJSON
+
+Inbound JSON entries are sorted by `Key()` during unmarshal before assignment.
+
+```go
+func ExampleSyncBST_UnmarshalJSON() {
+	var tree SyncBST[testEntry]
+
+	if err := json.Unmarshal([]byte(`[{"key":"c","value":"charlie"},{"key":"a","value":"alpha"}]`), &tree); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := tree.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleSyncBST.UnmarshalJSON(): %v\n", te)
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleSyncBST.UnmarshalJSON(): {a alpha}
+	// exampleSyncBST.UnmarshalJSON(): {c charlie}
 }
 ```
 
