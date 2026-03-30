@@ -1,6 +1,7 @@
 package bst
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -12,9 +13,9 @@ func TestSyncBSTGet(t *testing.T) {
 	t.Parallel()
 
 	tree := syncBSTFromEntries(
-		testEntry{key: "a", value: "alpha"},
-		testEntry{key: "c", value: "charlie"},
-		testEntry{key: "e", value: "echo"},
+		testEntry{K: "a", V: "alpha"},
+		testEntry{K: "c", V: "charlie"},
+		testEntry{K: "e", V: "echo"},
 	)
 
 	tests := []struct {
@@ -26,7 +27,7 @@ func TestSyncBSTGet(t *testing.T) {
 		{
 			name:   "hit",
 			key:    "c",
-			want:   testEntry{key: "c", value: "charlie"},
+			want:   testEntry{K: "c", V: "charlie"},
 			wantOK: true,
 		},
 		{
@@ -62,9 +63,9 @@ func TestSyncBSTForEach(t *testing.T) {
 	t.Parallel()
 
 	tree := syncBSTFromEntries(
-		testEntry{key: "a", value: "alpha"},
-		testEntry{key: "b", value: "bravo"},
-		testEntry{key: "c", value: "charlie"},
+		testEntry{K: "a", V: "alpha"},
+		testEntry{K: "b", V: "bravo"},
+		testEntry{K: "c", V: "charlie"},
 	)
 
 	sentinel := errors.New("stop")
@@ -85,7 +86,7 @@ func TestSyncBSTForEach(t *testing.T) {
 		{
 			name: "stops on error",
 			fn: func(entry testEntry) error {
-				if entry.key == "b" {
+				if entry.K == "b" {
 					return sentinel
 				}
 
@@ -103,7 +104,7 @@ func TestSyncBSTForEach(t *testing.T) {
 
 			var gotKeys []string
 			err := tree.ForEach(func(entry testEntry) error {
-				gotKeys = append(gotKeys, entry.key)
+				gotKeys = append(gotKeys, entry.K)
 				return tt.fn(entry)
 			})
 
@@ -122,9 +123,9 @@ func TestSyncBSTCursor(t *testing.T) {
 	t.Parallel()
 
 	tree := syncBSTFromEntries(
-		testEntry{key: "a", value: "alpha"},
-		testEntry{key: "c", value: "charlie"},
-		testEntry{key: "e", value: "echo"},
+		testEntry{K: "a", V: "alpha"},
+		testEntry{K: "c", V: "charlie"},
+		testEntry{K: "e", V: "echo"},
 	)
 
 	err := tree.Cursor(func(cursor *Cursor[testEntry]) error {
@@ -150,47 +151,47 @@ func TestSyncBSTInsert(t *testing.T) {
 	}{
 		{
 			name: "insert into empty tree",
-			val:  testEntry{key: "b", value: "bravo"},
+			val:  testEntry{K: "b", V: "bravo"},
 			want: []testEntry{
-				{key: "b", value: "bravo"},
+				{K: "b", V: "bravo"},
 			},
 		},
 		{
 			name: "insert at beginning",
 			tree: []testEntry{
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
-			val: testEntry{key: "a", value: "alpha"},
+			val: testEntry{K: "a", V: "alpha"},
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 		},
 		{
 			name: "insert in middle",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "e", V: "echo"},
 			},
-			val: testEntry{key: "c", value: "charlie"},
+			val: testEntry{K: "c", V: "charlie"},
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 		},
 		{
 			name: "replace existing key",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
 			},
-			val: testEntry{key: "c", value: "updated"},
+			val: testEntry{K: "c", V: "updated"},
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "updated"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "updated"},
 			},
 		},
 	}
@@ -227,52 +228,52 @@ func TestSyncBSTRemove(t *testing.T) {
 		{
 			name: "remove missing key",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
 			},
 			key: "b",
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
 			},
 		},
 		{
 			name: "remove first entry",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 			key: "a",
 			want: []testEntry{
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 		},
 		{
 			name: "remove middle entry",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 			key: "c",
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "e", V: "echo"},
 			},
 		},
 		{
 			name: "remove last entry",
 			tree: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
-				{key: "e", value: "echo"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
+				{K: "e", V: "echo"},
 			},
 			key: "e",
 			want: []testEntry{
-				{key: "a", value: "alpha"},
-				{key: "c", value: "charlie"},
+				{K: "a", V: "alpha"},
+				{K: "c", V: "charlie"},
 			},
 		},
 	}
@@ -297,6 +298,95 @@ func TestSyncBSTRemove(t *testing.T) {
 	}
 }
 
+func TestSyncBSTMarshalJSON(t *testing.T) {
+	t.Parallel()
+
+	tree := &SyncBST[testEntry]{}
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+
+	bs, err := json.Marshal(tree)
+	if err != nil {
+		t.Fatalf("Marshal() error = %v, want nil", err)
+	}
+
+	var got []testEntry
+	if err = json.Unmarshal(bs, &got); err != nil {
+		t.Fatalf("Unmarshal(marshaled tree) error = %v, want nil", err)
+	}
+
+	want := []testEntry{
+		{K: "a", V: "alpha"},
+		{K: "b", V: "bravo"},
+		{K: "c", V: "charlie"},
+	}
+
+	if !slices.Equal(got, want) {
+		t.Fatalf("Marshal() = %#v, want %#v", got, want)
+	}
+}
+
+func TestSyncBSTUnmarshalJSON(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		input   string
+		want    []testEntry
+		wantErr bool
+	}{
+		{
+			name:  "sorts inbound entries by key",
+			input: `[{"key":"c","value":"charlie"},{"key":"a","value":"alpha"},{"key":"b","value":"bravo"}]`,
+			want: []testEntry{
+				{K: "a", V: "alpha"},
+				{K: "b", V: "bravo"},
+				{K: "c", V: "charlie"},
+			},
+		},
+		{
+			name:    "returns error for invalid json",
+			input:   `{"key":"a"`,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var tree SyncBST[testEntry]
+			err := json.Unmarshal([]byte(tt.input), &tree)
+			if tt.wantErr {
+				if err == nil {
+					t.Fatal("Unmarshal() error = nil, want non-nil")
+				}
+
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("Unmarshal() error = %v, want nil", err)
+			}
+
+			var got []testEntry
+			err = tree.ForEach(func(entry testEntry) error {
+				got = append(got, entry)
+				return nil
+			})
+			if err != nil {
+				t.Fatalf("ForEach() error = %v, want nil", err)
+			}
+
+			if !slices.Equal(got, tt.want) {
+				t.Fatalf("Unmarshal() entries = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
 func ExampleSyncBST() {
 	tree := NewSync[testEntry](1024)
 
@@ -308,20 +398,20 @@ func ExampleSyncBST() {
 func ExampleSyncBST_Insert() {
 	tree := NewSync[testEntry](1024)
 
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	// Output:
 }
 
 func ExampleSyncBST_Get() {
 	tree := NewSync[testEntry](1024)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	val, ok := tree.Get("a")
 	fmt.Printf("exampleSyncBST.Get(%q): %v / %v\n", "a", val, ok)
@@ -332,10 +422,10 @@ func ExampleSyncBST_Get() {
 
 func ExampleSyncBST_ForEach() {
 	tree := NewSync[testEntry](1024)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	if err := tree.ForEach(func(te testEntry) error {
 		fmt.Printf("exampleSyncBST.ForEach(): %v\n", te)
@@ -353,10 +443,10 @@ func ExampleSyncBST_ForEach() {
 
 func ExampleSyncBST_Cursor() {
 	tree := NewSync[testEntry](1024)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	if err := tree.Cursor(func(cursor *Cursor[testEntry]) error {
 		val, ok := cursor.Seek("b")
@@ -372,10 +462,10 @@ func ExampleSyncBST_Cursor() {
 
 func ExampleSyncBST_Remove() {
 	tree := NewSync[testEntry](1024)
-	tree.Insert(testEntry{key: "a", value: "alpha"})
-	tree.Insert(testEntry{key: "b", value: "bravo"})
-	tree.Insert(testEntry{key: "c", value: "charlie"})
-	tree.Insert(testEntry{key: "d", value: "delta"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "c", V: "charlie"})
+	tree.Insert(testEntry{K: "d", V: "delta"})
 
 	tree.Remove("b")
 	fmt.Printf("exampleSyncBST.Length(): %d\n", tree.Length())
@@ -404,10 +494,10 @@ func collectSyncBST(tree *SyncBST[testEntry]) ([]testEntry, error) {
 }
 
 type testEntry struct {
-	key   string
-	value string
+	K string `json:"key"`
+	V string `json:"value"`
 }
 
 func (e testEntry) Key() string {
-	return e.key
+	return e.K
 }
