@@ -145,3 +145,16 @@ func ExampleBST_Remove() {
 	// Output:
 	// exampleBS.Remove(): [{a alpha} {c charlie} {d delta}]
 }
+
+func ExampleBST_UnmarshalJSON() {
+	var tree BST[testEntry]
+
+	if err := json.Unmarshal([]byte(`[{"key":"c","value":"charlie"},{"key":"a","value":"alpha"},{"key":"b","value":"bravo"}]`), &tree); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("exampleBST.UnmarshalJSON(): %v\n", tree)
+
+	// Output:
+	// exampleBST.UnmarshalJSON(): [{a alpha} {b bravo} {c charlie}]
+}

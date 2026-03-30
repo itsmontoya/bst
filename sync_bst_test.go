@@ -474,6 +474,41 @@ func ExampleSyncBST_Remove() {
 	// exampleSyncBST.Length(): 3
 }
 
+func ExampleSyncBST_MarshalJSON() {
+	tree := NewSync[testEntry](0)
+	tree.Insert(testEntry{K: "b", V: "bravo"})
+	tree.Insert(testEntry{K: "a", V: "alpha"})
+
+	bs, err := json.Marshal(tree)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("exampleSyncBST.MarshalJSON(): %s\n", bs)
+
+	// Output:
+	// exampleSyncBST.MarshalJSON(): [{"key":"a","value":"alpha"},{"key":"b","value":"bravo"}]
+}
+
+func ExampleSyncBST_UnmarshalJSON() {
+	var tree SyncBST[testEntry]
+
+	if err := json.Unmarshal([]byte(`[{"key":"c","value":"charlie"},{"key":"a","value":"alpha"}]`), &tree); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := tree.ForEach(func(te testEntry) error {
+		fmt.Printf("exampleSyncBST.UnmarshalJSON(): %v\n", te)
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
+
+	// Output:
+	// exampleSyncBST.UnmarshalJSON(): {a alpha}
+	// exampleSyncBST.UnmarshalJSON(): {c charlie}
+}
+
 func syncBSTFromEntries(entries ...testEntry) *SyncBST[testEntry] {
 	tree := &SyncBST[testEntry]{}
 	for _, entry := range entries {
