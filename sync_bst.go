@@ -1,6 +1,9 @@
 package bst
 
-import "sync"
+import (
+	"encoding/json"
+	"sync"
+)
 
 // NewSync creates a SyncBST preallocated with capacity length.
 //
@@ -73,4 +76,12 @@ func (b *SyncBST[T]) Length() (n int) {
 	b.mux.RLock()
 	defer b.mux.RUnlock()
 	return len(b.b)
+}
+
+func (b *SyncBST[T]) MarshalJSON() (bs []byte, err error) {
+	return json.Marshal(b.b)
+}
+
+func (b *SyncBST[T]) UnmarshalJSON(bs []byte) (err error) {
+	return json.Unmarshal(bs, &b.b)
 }
