@@ -1,6 +1,9 @@
 package bst
 
-import "sort"
+import (
+	"encoding/json"
+	"sort"
+)
 
 // BST is a sorted collection of entries keyed by string.
 //
@@ -56,6 +59,21 @@ func (b *BST[T]) Remove(key string) {
 	b.remove(index)
 }
 
+func (b *BST[T]) UnmarshalJSON(bs []byte) (err error) {
+	var s []T
+	if err = json.Unmarshal(bs, &s); err != nil {
+		return err
+	}
+
+	// Ensure that inbound slice is sorted
+	sort.Slice(s, func(i, j int) (less bool) {
+		return s[i].Key() < s[j].Key()
+	})
+
+	*b = s
+	return nil
+}
+
 func (b BST[T]) get(key string) (out T, index int, match bool) {
 	index = sort.Search(len(b), func(i int) bool {
 		return b[i].Key() >= key
@@ -81,6 +99,6 @@ func (b *BST[T]) remove(index int) {
 	*b = (*b)[:len(*b)-1]
 }
 
-func (b *BST[T]) zero() (out T) {
+func (b BST[T]) zero() (out T) {
 	return out
 }
